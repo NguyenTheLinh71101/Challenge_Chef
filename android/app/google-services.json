@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "795051969228",
+    "project_id": "challengechef-6232b",
+    "storage_bucket": "challengechef-6232b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:795051969228:android:0f94323e0be05b8c945069",
+        "android_client_info": {
+          "package_name": "com.example.challengechef"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "795051969228-m1us13cp5m64fbvj0kbo3uhmkj20jbgm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.challengechef",
+            "certificate_hash": "937d9a0413a136a9a3fb3dc782745f886d4350cf"
+          }
+        },
+        {
+          "client_id": "795051969228-94il4h2fe00ad3hdqgldee3dkhgbdqmi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYAh_rGNH5YQ5ELMEgwon8FAYIkkP6u-w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "795051969228-94il4h2fe00ad3hdqgldee3dkhgbdqmi.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "795051969228-9mmm13dbav8m0gu0deq0ihn51av4fj42.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.challengechef"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

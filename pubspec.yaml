@@ -1,0 +1,42 @@
+name: challengechef
+description: "A new Flutter project."
+
+publish_to: 'none'
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+  provider: ^6.1.2 
+  # Firebase
+  firebase_core: ^2.24.2
+  firebase_auth: ^4.15.3
+  cloud_firestore: ^4.13.6
+  google_sign_in: ^6.2.1
+  
+  # Gọi API và quản lý môi trường
+  http: ^1.1.2       # Hoặc bạn có thể dùng 'dio' nếu thích
+  flutter_dotenv: ^5.1.0 # Dùng để bảo mật API Key, tránh đưa lên Github
+
+
+  cupertino_icons: ^1.0.8
+  translator: ^1.0.4+1
+  image_picker: ^1.2.2
+  firebase_storage: ^11.6.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+flutter:
+
+  uses-material-design: true
+  assets:
+    - assets/logo_app.png
