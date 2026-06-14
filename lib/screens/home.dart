@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-
 import '../core/constants.dart';
 import '../widgets/menu_app.dart';
 import '../controllers/recipe_controller.dart';
@@ -35,8 +34,40 @@ class _HomeScreenState extends State<HomeScreen> {
     final recentRecipes =
         context.watch<RecipeController>().recentRecipes;
 
-    final pinnedRecipes =
-        context.watch<RecipeController>().pinnedRecipes;
+    // ================= DỮ LIỆU CỐ ĐỊNH (HARDCODE) =================
+    final List<Recipe> defaultPopularRecipes = [
+      Recipe(
+        id: 'default_1',
+        title: 'Trứng chiên',
+        imageUrl: 'https://images.unsplash.com/photo-1528712306091-ed0763094c98?q=80&w=600&auto=format&fit=crop',
+        instructions: 'Đập trứng ra bát, khuấy đều với nước mắm, tiêu và hành lá. Cho dầu ăn vào chảo đun nóng, đổ hỗn hợp trứng vào chiên vàng đều hai mặt. Tắt bếp và cho ra đĩa.',
+        missingIngredients: [], 
+        detailIngredients: [
+          '2 quả trứng gà',
+          '1 nhánh hành lá (thái nhỏ)',
+          '1 muỗng cà phê nước mắm',
+          '1/2 muỗng cà phê hạt tiêu',
+          '1 muỗng canh dầu ăn'
+        ],
+        userId: 'default_static', // THÊM DÒNG NÀY: Để chặn ứng dụng gọi API mạng
+      ),
+      Recipe(
+        id: 'default_2',
+        title: 'Cơm chiên trứng',
+        imageUrl: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?q=80&w=600&auto=format&fit=crop',
+        instructions: 'Phi thơm hành tím băm với dầu ăn. Cho cơm nguội vào chảo đảo tơi khoảng 3 phút. Đập trứng trực tiếp vào chảo, đảo đều tay để trứng quyện vào từng hạt cơm. Nêm nếm nước tương, bột ngọt cho vừa miệng. Cuối cùng rắc hành lá, tiêu rồi tắt bếp.',
+        missingIngredients: [], 
+        detailIngredients: [
+          '1 bát cơm nguội (để tủ lạnh sẽ ngon hơn)',
+          '2 quả trứng gà',
+          '1 củ hành tím (băm nhuyễn)',
+          '1 nhánh hành lá (thái nhỏ)',
+          '1 muỗng canh nước tương (xì dầu)',
+          '1 muỗng canh dầu ăn'
+        ], 
+        userId: 'default_static', // THÊM DÒNG NÀY: Để chặn ứng dụng gọi API mạng
+      ),
+    ];
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -91,17 +122,6 @@ class _HomeScreenState extends State<HomeScreen> {
               'assets/logo_app.png',
             ),
           ),
-
-          // actions: [
-          //   IconButton(
-          //     onPressed: () {},
-          //     icon: const Icon(
-          //       Icons.notifications,
-          //       color: Colors.black,
-          //       size: 28,
-          //     ),
-          //   ),
-          // ],
         ),
       ),
 
@@ -174,48 +194,32 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const SizedBox(height: 20),
 
-              // ===== POPULAR RECIPES =====
+              // ===== POPULAR RECIPES (ĐÃ SỬA THÀNH DỮ LIỆU CỐ ĐỊNH) =====
               _buildSection(
                 title: 'Các món phổ biến',
                 isTitleItalic: false,
-
-                children:
-                    pinnedRecipes.isEmpty
-                        ? [
-                          const Padding(
-                            padding:
-                                EdgeInsets.all(16),
-                            child: Text(
-                              'Bạn chưa ghim món ăn nào.',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontStyle:
-                                    FontStyle.italic,
-                              ),
-                            ),
+                // Quét qua danh sách 3 món mặc định để hiển thị
+                children: defaultPopularRecipes
+                    .map(
+                      (recipe) =>
+                          _buildFoodCard(
+                            recipe,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) =>
+                                          RecipeDetailScreen(
+                                            recipe:
+                                                recipe,
+                                          ),
+                                ),
+                              );
+                            },
                           ),
-                        ]
-                        : pinnedRecipes
-                            .map(
-                              (recipe) =>
-                                  _buildFoodCard(
-                                    recipe,
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder:
-                                              (context) =>
-                                                  RecipeDetailScreen(
-                                                    recipe:
-                                                        recipe,
-                                                  ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                            )
-                            .toList(),
+                    )
+                    .toList(),
               ),
 
               const SizedBox(height: 20),

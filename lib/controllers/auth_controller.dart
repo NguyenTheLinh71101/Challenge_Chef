@@ -7,17 +7,41 @@ class AuthController with ChangeNotifier {
   User? _currentUser;
   bool _isLoading = false;
 
+  // Khởi tạo controller, lấy thông tin user hiện tại nếu đã đăng nhập trước đó
+  AuthController() {
+    _currentUser = FirebaseAuth.instance.currentUser;
+  }
+
   User? get currentUser => _currentUser;
   bool get isLoading => _isLoading;
 
-  Future<bool> login(String email, String password) async {
+  // Xử lý Đăng nhập bằng Google
+  Future<bool> loginWithGoogle() async {
     _isLoading = true;
     notifyListeners();
 
-    _currentUser = await _authService.signIn(email, password);
+    try {
+      _currentUser = await _authService.signInWithGoogle();
+    } catch (e) {
+      print("Lỗi trong AuthController (Google Sign-In): $e");
+      _currentUser = null;
+    }
 
     _isLoading = false;
     notifyListeners();
+
     return _currentUser != null;
+  }
+
+  // Xử lý Đăng xuất
+  Future<void> logout() async {
+    _isLoading = true;
+    notifyListeners();
+
+    await _authService.signOut();
+    _currentUser = null;
+
+    _isLoading = false;
+    notifyListeners();
   }
 }

@@ -7,7 +7,7 @@ class Recipe {
   final String imageUrl;
   final List<Ingredient> missingIngredients;
   final List<String> detailIngredients;
-  final String? userId; // THÊM MỚI: ID của người tạo món ăn
+  final String? userId; 
 
   Recipe({
     required this.id,
@@ -16,7 +16,7 @@ class Recipe {
     required this.imageUrl,
     required this.missingIngredients,
     this.detailIngredients = const [], 
-    this.userId, // THÊM MỚI
+    this.userId, 
   });
 
   factory Recipe.fromJson(Map<String, dynamic> json) {
@@ -38,11 +38,18 @@ class Recipe {
       title: json['strMeal'] ?? json['title'] ?? '',
       instructions: json['strInstructions'] ?? json['instructions'] ?? 'Chưa có hướng dẫn',
       imageUrl: json['strMealThumb'] ?? json['imageUrl'] ?? '',
-      missingIngredients: (json['missingIngredients'] as List?)
-              ?.map((item) => Ingredient.fromJson(item))
-              .toList() ?? [],
+      
+      // ================= ĐÃ SỬA LỖI Ở ĐÂY =================
+      // Kiểm tra an toàn: Chỉ ép kiểu khi dữ liệu thực sự là kiểu List
+      missingIngredients: (json['missingIngredients'] is List)
+          ? (json['missingIngredients'] as List)
+              .map((item) => Ingredient.fromJson(item))
+              .toList()
+          : [], 
+      // ====================================================
+      
       detailIngredients: parsedIngredients, 
-      userId: json['userId'], // THÊM MỚI: Đọc userId từ Firebase
+      userId: json['userId'], 
     );
   }
 }
