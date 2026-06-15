@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/recipe_model.dart';
 
+const String _defaultAuthorName = 'Đầu bếp bí ẩn';
+
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -128,6 +130,95 @@ class FirestoreService {
     } catch (e) {
       print("Lỗi thực thi xóa công thức: $e");
       rethrow;
+    }
+  }
+
+  /// 6. ĐỒNG BỘ HỒ SƠ NGƯỜI DÙNG LÊN COLLECTION 'users'
+  Future<void> syncUserProfile(User user) async {
+    try {
+      await _db.collection('users').doc(user.uid).set({
+        'displayName': user.displayName ?? _defaultAuthorName,
+        'email': user.email ?? '',
+        'photoUrl': user.photoURL ?? '',
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+    } catch (e) {
+      print("Lỗi đồng bộ hồ sơ người dùng: $e");
+    }
+  }
+
+  /// 7. TRA CỨU TÊN HIỂN THỊ THEO DANH SÁCH userId
+  Future<Map<String, String>> getDisplayNamesByIds(Set<String> userIds) async {
+    if (userIds.isEmpty) return {};
+
+    final Map<String, String> result = {};
+    final ids = userIds.where((id) => id.isNotEmpty).toList();
+
+    try {
+      final snapshots = await Future.wait(
+        ids.map((id) => _db.collection('users').doc(id).get()),
+      );
+
+      for (final doc in snapshots) {
+        if (!doc.exists) continue;
+        final data = doc.data();
+        result[doc.id] = data?['displayName'] as String? ?? _defaultAuthorName;
+      }
+    } catch (e) {
+      print("Lỗi tra cứu tên người dùng: $e");
+    }
+
+    return result;
+  }
+
+  Future<List<Recipe>> _attachAuthorNames(List<Recipe> recipes) async {
+    final userIds = recipes
+        .map((recipe) => recipe.userId)
+        .where((id) => id != null && id.isNotEmpty)
+        .cast<String>()
+        .toSet();
+
+    final nameMap = await getDisplayNamesByIds(userIds);
+
+    return recipes.map((recipe) {
+      if (recipe.userId == null || recipe.userId!.isEmpty) {
+        return recipe;
+      }
+      return recipe.copyWith(
+        authorName: nameMap[recipe.userId] ?? _defaultAuthorName,
+      );
+    }).toList();
+  }
+
+  /// 8. LẤY CÔNG THỨC CỘNG ĐỒNG (Tất cả món ăn do người dùng tự tạo đóng góp công khai)
+  Future<List<Recipe>> getCommunityRecipes() async {
+    try {
+      // Thử truy vấn trực tiếp từ Firestore để tối ưu băng thông
+      QuerySnapshot snapshot = await _db
+          .collection('recipes')
+          .where('userId', isNotEqualTo: null)
+          .get();
+
+      final recipes = snapshot.docs.map((doc) {
+        return Recipe.fromJson(doc.data() as Map<String, dynamic>);
+      }).toList();
+
+      return _attachAuthorNames(recipes);
+    } catch (e) {
+      print("Lỗi truy vấn trực tiếp community index, chuyển sang bộ lọc RAM dự phòng: $e");
+      try {
+        // Cơ chế dự phòng: Lấy toàn bộ hồ chứa về rồi lọc ra những món có tác giả (userId != null)
+        QuerySnapshot snapshot = await _db.collection('recipes').get();
+        final recipes = snapshot.docs
+            .map((doc) => Recipe.fromJson(doc.data() as Map<String, dynamic>))
+            .where((recipe) => recipe.userId != null && recipe.userId!.isNotEmpty)
+            .toList();
+
+        return _attachAuthorNames(recipes);
+      } catch (err) {
+        print("Lỗi hệ thống lưu trữ cộng đồng: $err");
+        return [];
+      }
     }
   }
 }

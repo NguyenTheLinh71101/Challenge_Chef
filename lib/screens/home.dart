@@ -5,6 +5,7 @@ import '../core/constants.dart';
 import '../widgets/menu_app.dart';
 import '../controllers/recipe_controller.dart';
 import '../models/recipe_model.dart';
+import '../services/firestore_service.dart';
 import 'search_results_screen.dart';
 import 'recipe_detail_screen.dart';
 import 'add_recipe_screen.dart';
@@ -19,6 +20,15 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      FirestoreService().syncUserProfile(user);
+    }
+  }
 
   @override
   void dispose() {
@@ -316,8 +326,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
             children: [
               _buildBottomNavItem(
-                Icons.search,
-                'Tìm kiếm',
+                Icons.home,
+                'HOME',
                 onTap: () {},
               ),
 

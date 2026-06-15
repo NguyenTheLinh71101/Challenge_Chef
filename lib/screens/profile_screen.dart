@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'community_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -65,6 +66,29 @@ class ProfileScreen extends StatelessWidget {
             _buildActionTile(Icons.favorite_border, 'Món ăn yêu thích của tôi'),
             _buildActionTile(Icons.kitchen, 'Nguyên liệu tủ lạnh'),
             _buildActionTile(Icons.edit_note, 'Chỉnh sửa thông tin cá nhân'),
+
+            ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+              leading: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.orange.shade50,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.people_alt_outlined, color: Colors.orange),
+              ),
+              title: const Text(
+                'Cộng đồng ẩm thực',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CommunityScreen()),
+                );
+              },
+            ),
           ],
         ),
       ),

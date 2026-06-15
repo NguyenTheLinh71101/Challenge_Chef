@@ -7,7 +7,8 @@ class Recipe {
   final String imageUrl;
   final List<Ingredient> missingIngredients;
   final List<String> detailIngredients;
-  final String? userId; 
+  final String? userId;
+  final String? authorName;
 
   Recipe({
     required this.id,
@@ -15,9 +16,25 @@ class Recipe {
     required this.instructions,
     required this.imageUrl,
     required this.missingIngredients,
-    this.detailIngredients = const [], 
-    this.userId, 
+    this.detailIngredients = const [],
+    this.userId,
+    this.authorName,
   });
+
+  Recipe copyWith({
+    String? authorName,
+  }) {
+    return Recipe(
+      id: id,
+      title: title,
+      instructions: instructions,
+      imageUrl: imageUrl,
+      missingIngredients: missingIngredients,
+      detailIngredients: detailIngredients,
+      userId: userId,
+      authorName: authorName ?? this.authorName,
+    );
+  }
 
   factory Recipe.fromJson(Map<String, dynamic> json) {
     List<String> parsedIngredients = [];

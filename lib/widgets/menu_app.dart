@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../services/firebase_auth_service.dart';
+import '../screens/community_screen.dart';
 
 // TẠM ẨN IMPORT: Comment lại để tránh báo lỗi "unused import" (thư viện không được sử dụng)
 // import '../screens/profile_screen.dart'; 
@@ -55,33 +56,23 @@ class SideMenu extends StatelessWidget {
             ),
           ),
           const Divider(), 
-          
-          /* ==========================================
-             BẮT ĐẦU PHẦN TẠM ẨN CÁC MENU
-             ========================================== 
-          // Truyền thêm action chuyển trang cho mục Bếp cá nhân
-          _buildMenuItem(Icons.person_outline, 'Bếp cá nhân', context, onTap: () {
-            Navigator.pop(context); // Đóng menu trước
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ProfileScreen()),
-            );
-          }),
-          // THÊM NÚT CẨM NANG CỦA TÔI
-          _buildMenuItem(Icons.menu_book, 'Cẩm nang của tôi', context, onTap: () {
-            Navigator.pop(context); // Đóng menu trước
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const MyCookbookScreen()), // Chuyển sang trang mới
-            );
-          }), 
-          _buildMenuItem(Icons.history, 'Món Vừa Xem', context),
-          _buildMenuItem(Icons.settings_outlined, 'Cài đặt', context),
-          
-          const Divider(), 
-             ==========================================
-             KẾT THÚC PHẦN TẠM ẨN
-             ========================================== */
+          ListTile(
+            leading: const Icon(Icons.people_alt_outlined, color: Colors.orange),
+            title: const Text(
+              'Cộng đồng ẩm thực',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
+            onTap: () {
+              // Đóng thanh menu trượt trước khi chuyển trang
+              Navigator.pop(context); 
+              
+              // Chuyển hướng sang màn hình Cộng đồng
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const CommunityScreen()),
+              );
+            },
+          ),
           
           // Nút Đăng Xuất
           ListTile(

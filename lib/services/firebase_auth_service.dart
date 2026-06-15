@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'firestore_service.dart';
 
 class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -21,7 +22,11 @@ class FirebaseAuthService {
       );
 
       UserCredential userCredential = await _auth.signInWithCredential(credential);
-      return userCredential.user;
+      final user = userCredential.user;
+      if (user != null) {
+        await FirestoreService().syncUserProfile(user);
+      }
+      return user;
     } catch (e) {
       print("Lỗi đăng nhập Google: $e");
       return null;

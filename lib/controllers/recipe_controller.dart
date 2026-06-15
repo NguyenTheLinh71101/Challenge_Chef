@@ -160,6 +160,12 @@ class RecipeController with ChangeNotifier {
   List<Recipe> _myRecipes = [];
   bool _isMyRecipesLoading = false;
 
+  // ================= CỘNG ĐỒNG ẨM THỰC =================
+  List<Recipe> _communityRecipes = [];
+  bool _isCommunityLoading = false;
+
+  List<Recipe> get communityRecipes => _communityRecipes;
+  bool get isCommunityLoading => _isCommunityLoading;
   List<Recipe> get myRecipes => _myRecipes;
   bool get isMyRecipesLoading => _isMyRecipesLoading;
 
@@ -186,6 +192,20 @@ class RecipeController with ChangeNotifier {
       notifyListeners();
     } catch (e) {
       print("Lỗi khi xóa khỏi cẩm nang: $e");
+    }
+  }
+
+  Future<void> fetchCommunityRecipes() async {
+    _isCommunityLoading = true;
+    notifyListeners();
+
+    try {
+      _communityRecipes = await FirestoreService().getCommunityRecipes();
+    } catch (e) {
+      print("Lỗi bộ điều khiển khi tải dữ liệu cộng đồng: $e");
+    } finally {
+      _isCommunityLoading = false;
+      notifyListeners();
     }
   }
 }
